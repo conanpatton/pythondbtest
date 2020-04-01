@@ -29,7 +29,8 @@ try:
     cursor.execute(sqlcmd)
     results = cursor.fetchall()
 
-    with open('result.json', 'w+', encoding='utf-8') as f:
+    outputfile = 'result.json'
+    with open(outputfile, 'w+', encoding='utf-8') as f:
         f.write(json.dumps(results, default=default))
     f.close()
 except mysql.connector.Error as err:
@@ -37,3 +38,4 @@ except mysql.connector.Error as err:
 finally:
     cursor.close()
     cnx.close()
+    f.close()

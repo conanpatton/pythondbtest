@@ -3,9 +3,6 @@ import json
 from decimal import Decimal
 from datetime import date, datetime
 from bson.objectid import ObjectId
-# import bson
-# import bson.json_util
-# from bson.json_util import dumps
 
 
 def default(obj):
@@ -20,18 +17,20 @@ def default(obj):
 
 
 try:
-    client = pymongo.MongoClient('mongodb://47.111.3.150:27000/')
+    strconn = 'mongodb://47.111.3.150:27000/'
+    client = pymongo.MongoClient(strconn)
     db = client.lightmes_db_oez
     collection = db.tm_item
-    strjson = ''
-    for data in collection.find():
-        strjson = strjson + ',' + \
-            json.dumps(data, ensure_ascii=False, default=default)
+    cursor = collection.find()
+    listdata = []
+    for data in cursor:
+        listdata.append(data)
 
-    with open('tm_item.json', 'w+', encoding='utf-8') as f:
-        f.write('[')
-        f.write(strjson)
-        f.write(']')
+    outputfile = 'tm_item.json'
+    with open(outputfile, 'w+', encoding='utf-8') as f:
+        f.write(json.dumps(listdata, ensure_ascii=False, default=default))
     f.close()
-except SystemError as err:
+except pymongo.errors as err:
     print(err)
+finally:
+    f.close()
